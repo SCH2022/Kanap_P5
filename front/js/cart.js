@@ -12,17 +12,7 @@ fetch(`http://localhost:3000/api/products/`)
   .catch(error => {
     console.error("Erreur lors de la récupération du produit :", error);
   });
-/*
-// récupération des éléments du formulaire
-const firstNameInput = document.getElementById("firstName");
-const lastNameInput = document.getElementById("lastName");
-const addressInput = document.getElementById("address");
-const cityInput = document.getElementById("city");
-const emailInput = document.getElementById("email");
 
-// recupération de l'élément "order"
-const orderButton = document.getElementById("order");
-*/
 // recupération des produits dans le Local Storage
 function getCart() {
   let productsInLocalStorage = JSON.parse(localStorage.getItem("cart"));
@@ -166,53 +156,32 @@ function updateTotalPriceDisplay(cart) {
   })
   const totalQuantity = cart.reduce((total, item) => total += parseInt(item.quantity), 0);//accumulateur
   const totalPrice = calculateTotalPrice(productInCart);
-  console.log("totalPrice", totalPrice)
-  console.log("totalQuantity", totalQuantity)
 
   totalQuantityElement.textContent = totalQuantity;
   totalPriceElement.textContent = totalPrice + "";
-  //totalPriceElement.textContent = isNaN(totalPrice) ? "0" : totalPrice.toFixed(2) + "";
 
 }// récupération du panier 
 let cart = getCart();
-console.log(cart);
 
 // fonction calculer le prix total du panier
 function calculateTotalPrice(cart) {
-  console.log("Cart", cart);
   return cart.reduce((total, item) => total += (parseFloat(item.quantity) * parseFloat(item.price)) || 0, 0);
 }
 
 // supprimer un produit du panier (classe "deleteItem")
 function deleteItem(itemId) {
   const [id, color] = itemId.split(' ');
-  console.log("ID:", id); // Affiche l'ID du produit
-  console.log("Couleur:", color); // Affiche la couleur du produit
 
-  //utiliser find pour trouver le bon element dans local ou _id et color correspondent
+
   // Utilisation de la méthode find pour trouver l'élément correspondant
   const itemInCart = cart.find(item => item._id === id && item.color === color);
-
-  if (itemInCart) {
-    // l'élément correspondant a été trouvé
-    console.log("Élément trouvé dans le panier :", itemInCart);
-  } else {
-    // aucun élément correspondant n'a été trouvé
-    console.log("Aucun élément correspondant dans le panier.");
-  }
-  console.log('cart before', cart);
 
   cart = cart.filter(item => item._id !== id || item.color !== color);
   // mise à jour du panier dans le Local Storage
   localStorage.setItem('cart', JSON.stringify(cart));
-  // appeler une fonction de mise à jour
-  console.log('cart after', cart);
   // mise à jour du prix total après la suppression
   updateTotalPriceDisplay(cart);
-  //je veux recharger la page après avoir effectué une suppression d'éléments.
-  //window.location.reload();
 }
-
 
 // event listener pour supprimer un article
 function testdelete() {
@@ -233,16 +202,11 @@ function testdelete() {
 //let cart = getCart();
 console.log(cart);
 
-// Calcul du prix total et mise à jour de l'affichage
-//updateTotalPriceDisplay(cart);
-
 // fonction pour changer la quantité d'un produit
 function changeQuantity(e) {
-  console.log("ok")
   const newQuantity = parseInt(e.target.value);
   if (newQuantity >= 1 && newQuantity <= 100) {
     const itemId = e.target.parentElement.parentElement.parentElement.parentElement.dataset.id;
-    console.log("itemId", itemId)
     const [id, color] = itemId.split(' ');
 
     const itemInCart = cart.find(item => item._id === id && item.color === color);
@@ -285,12 +249,8 @@ async function sendOrderToAPI(orderData) {
 }
 
 async function handleOrderConfirmation(orderConfirmation) {
-  console.log("deuxieme")
   // Vérifier si la commande a été traitée avec succès
   if (orderConfirmation && orderConfirmation.orderId) {
-    // Récupérer l'ID de commande
-    const orderId = orderConfirmation.orderId;
-
     // Vider le panier dans le localStorage
     localStorage.removeItem("cart");
 
